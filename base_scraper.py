@@ -26,7 +26,11 @@ for link in links_to_websites:
     bs = BeautifulSoup(html.read(), 'html.parser')
     aobj = {}
     aobj['html'] = link
-    aobj['district'] = bs.find('address').children[1].text
+    geo_iterator = bs.find('address').children
+    geo_data = []
+    for child in geoiterator:
+        geo_data.append(child)
+    aobj['district'] = geo_data[1]
     list_of_announcements.append(aobj)
 
 print(list_of_announcements)
