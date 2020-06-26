@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import openpyxl
 import re
 
 links_to_websites = [] #список ссылок из выборки
@@ -11,7 +12,12 @@ query_results_list = bs.findAll('div', {'class': re.compile('--main-info--')})
 i = 1
 for result in query_results_list:
     print(i)
-    print(result['class'])
+    a = result.find('a').attrs['href'] #remove for about a half of redundant links
+    if 'https' in a:
+        links_to_websites.append(a)
+    print(a)
     i = i + 1
+
+print(links_to_websites)
 
 
