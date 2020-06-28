@@ -25,8 +25,8 @@ for link in links_to_websites:
     html = urlopen(link)
     bs = BeautifulSoup(html.read(), 'html.parser')
     aobj = {}
-    aobj['html'] = link
 
+    #ADRESS
     geo_iterator = bs.find('address').children #TODO как добавить в список только теги, без запятых + ЛИШНЯЯ промежуточная переменная
     geo_data = []
     for child in geo_iterator:
@@ -35,6 +35,14 @@ for link in links_to_websites:
     aobj['settlement'] = geo_data[6].text
     aobj['moscow_or_not'] = geo_data[0].text
     list_of_announcements.append(aobj)
+
+    #HIGHWAY
+    nearest_highway = bs.find('a', {'class': re.compile('--highway_link--')}).text
+    distance_to_highway = bs.find('span', {'class': re.compile('--highway_distance--')}).text
+    print('Highway and distance:')
+    print(nearest_highway, distance_to_highway)
+
+
 
     #TODO PRICE price_iterator = bs.findAll('div', {'class': re.compile('--price-container--')})
 
@@ -45,23 +53,23 @@ for link in links_to_websites:
 print('RESULT')
 print(list_of_announcements)
 
-wb = openpyxl.Workbook()
-sheet = wb["Sheet"]
-sheet['A1'] = 'веб адрес'
-sheet['B1'] = 'город'
-sheet['C1'] = 'округ'
-sheet['D1'] = 'поселение'
-for i in range(1, len(list_of_announcements)+1): #todo так перебирать тупо
-    a = 'A{}'.format(i)
-    b = 'B{}'.format(i)
-    c = 'C{}'.format(i)
-    d = 'D{}'.format(i)
-    sheet[a] = list_of_announcements[i-1]['html']
-    sheet[b] = list_of_announcements[i-1]['moscow_or_not']
-    sheet[c] = list_of_announcements[i-1]['district']
-    sheet[d] = list_of_announcements[i-1]['settlement']
-
-wb.save('first_excel.xlsx')
+# wb = openpyxl.Workbook()
+# sheet = wb["Sheet"]
+# sheet['A1'] = 'веб адрес'
+# sheet['B1'] = 'город'
+# sheet['C1'] = 'округ'
+# sheet['D1'] = 'поселение'
+# for i in range(1, len(list_of_announcements)+1): #todo так перебирать тупо
+#     a = 'A{}'.format(i)
+#     b = 'B{}'.format(i)
+#     c = 'C{}'.format(i)
+#     d = 'D{}'.format(i)
+#     sheet[a] = list_of_announcements[i-1]['html']
+#     sheet[b] = list_of_announcements[i-1]['moscow_or_not']
+#     sheet[c] = list_of_announcements[i-1]['district']
+#     sheet[d] = list_of_announcements[i-1]['settlement']
+#
+# wb.save('first_excel.xlsx')
 
 
 
