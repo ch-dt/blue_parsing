@@ -29,29 +29,61 @@ for link in links_to_websites:
     #ADRESS
     geo_iterator = bs.find('address').children #TODO как добавить в список только теги, без запятых + ЛИШНЯЯ промежуточная переменная
     geo_data = []
-    for child in geo_iterator:
+    for child in geo_iterator: #TODO надо ли каждый раз превращать bs в список вручную
         geo_data.append(child)
     aobj['district'] = geo_data[2].text
     aobj['settlement'] = geo_data[6].text
     aobj['moscow_or_not'] = geo_data[0].text
-    list_of_announcements.append(aobj)
 
     #HIGHWAY
     nearest_highway = bs.find('a', {'class': re.compile('--highway_link--')}).text
     distance_to_highway = bs.find('span', {'class': re.compile('--highway_distance--')}).text
-    print('Highway and distance:')
-    print(nearest_highway, distance_to_highway)
+    # print('Highway and distance:')
+    # print(nearest_highway, distance_to_highway)
+    aobj['nearest_highway'] = nearest_highway
+    aobj['distance_to_highway'] = distance_to_highway
 
+    #HOUSE PROPERTIES
+    house_props_iterator = bs.findAll('div', {'class': re.compile('--info-value--')})
+    house_titles_iterator = bs.findAll('div', {'class': re.compile('--info-title--')})
+    house_props_dict = {}
+
+    for k,v in zip(house_titles_iterator, house_props_iterator): #todo говнокод
+        house_props_dict[k.text] = v.text
+
+    print(house_props_dict)
+
+    aobj['floor_space'] = house_props_dict['Общая'] #todo решить что-то с кодировкой и слэшем
+    aobj['area_of_plot'] = house_props_dict['Участок']
+    if 'Тип дома' in house_props_dict.keys():
+        aobj['house_type'] = house_props_dict['Тип дома']
+    else:
+        aobj['house_type'] = '-'
+
+    if 'Этажей в доме"' in house_props_dict.keys():
+        aobj['number of floors'] = house_props_dict['Этажей в доме']
+    else:
+        aobj['number of floors'] = '-'
+
+    if 'Построен' in house_props_dict.keys():
+        aobj['built'] = house_props_dict['Построен']
+    else:
+        aobj['built'] = '-'
 
 
     #TODO PRICE price_iterator = bs.findAll('div', {'class': re.compile('--price-container--')})
 
-    #TODO BUILDING building_iterator
-
     #TODO VIEWS iterator
+
+
+#ADDING HOUSE DICTIONARY TO LIST
+    list_of_announcements.append(aobj)
 
 print('RESULT')
 print(list_of_announcements)
+
+
+#EXCEL TABLE
 
 # wb = openpyxl.Workbook()
 # sheet = wb["Sheet"]
