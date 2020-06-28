@@ -73,6 +73,17 @@ for link in links_to_websites:
 
     #TODO PRICE price_iterator = bs.findAll('div', {'class': re.compile('--price-container--')})
 
+    #PRICE CHANGED
+    u = []
+    price_changing_iterator = bs.findAll('td', {'class': re.compile('--event-price--')})
+    if price_changing_iterator != []:
+        aobj['initial_price'] = price_changing_iterator[-1].text #todo обращение напрямую к итератору работает! не нужно отдельно делать из него список
+    for p in price_changing_iterator:
+        u.append(p.text)
+    print(u)
+
+
+
     #TODO VIEWS iterator
 
 
